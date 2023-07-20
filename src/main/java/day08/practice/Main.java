@@ -7,6 +7,9 @@ package day08.practice;
  */
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
+import java.util.Iterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -14,46 +17,40 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-		HashMap<String, List<String>> departmentEmployeesMap = new HashMap<>();
+		
+		String[] inputs = { // => { "HR ": ["Ram", "Suresh"] , "IT": [ "Basker", "Josepg"] }
+		        "HR,Ram",
+		        "HR,Suresh",
+		        "IT,Basker",
+		        "IT,Joseph",
+		        "Admin,Sundar"
+		    };
 
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Enter the comma-separated department name and employee name pairs (e.g., HR,Ram):");
-		System.out.println("Type 'done' to finish input.");
+		    Map<String, List<String>> departmentEmployees = new HashMap<>();
 
-		while (true) {
-			System.out.print("Input: ");
-			String input = scanner.nextLine();
-			if (input.equalsIgnoreCase("done")) {
-				break;
-			}
+		    for (String input : inputs) {
+		      String[] pair = input.split(",");
+		      String department = pair[0].trim();
+		      String employee = pair[1].trim();
 
-			String[] values = input.split(",");
-			if (values.length != 2) {
-				System.out.println("Invalid input format. Please try again.");
-				continue;
-			}
+		      // departmentEmployees.put(department, new ArrayList<>());
+		      // { "HR": [ "Ram", "Suresh" ] }
 
-			String department = values[0].trim();
-			String employee = values[1].trim();
+		      departmentEmployees.putIfAbsent(department, new ArrayList<>());
+		      departmentEmployees.get(department).add(employee);
+		    }
 
-			List<String> employees = departmentEmployeesMap.getOrDefault(department, new ArrayList<>());
-			employees.add(employee);
-			departmentEmployeesMap.put(department, employees);
-		}
+		    // Get the entry set from the map
+		    Set<Map.Entry<String, List<String>>> entries = departmentEmployees.entrySet();
+		    // [ { "HR": [ "Ram", "Suresh" ] }, {}, {}, {} ]
 
-		// Print department names and employees
-		System.out.println("\nOutput:");
-		for (String department : departmentEmployeesMap.keySet()) {
-			List<String> employees = departmentEmployeesMap.get(department);
+		    // Get an iterator for the entry set
+		    Iterator<Map.Entry<String, List<String>>> iterator = entries.iterator();
 
-			System.out.print(department + ": ");
-			for (int i = 0; i < employees.size(); i++) {
-				if (i > 0) {
-					System.out.print(", ");
-				}
-				System.out.print(employees.get(i));
-			}
-			System.out.println();
-		}
+		    // Iterate over the entries
+		    while (iterator.hasNext()) {
+		      Map.Entry<String, List<String>> entry = iterator.next();
+		      System.out.println(entry.getKey() + ": " + entry.getValue());
+		    }
 	}
 }
